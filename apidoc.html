@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lemon OA API文档</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #666;
+            margin-top: 20px;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .put { background: #fca130; color: white; }
+        .delete { background: #f93e3e; color: white; }
+        .endpoint {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #f5f5f5;
+        }
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lemon OA API文档</h1>
+        
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#auth">认证管理</a></li>
+            <li><a href="#user">用户管理</a></li>
+            <li><a href="#role">角色管理</a></li>
+            <li><a href="#permission">权限管理</a></li>
+            <li><a href="#address-book">通讯录管理</a></li>
+            <li><a href="#notification">消息通知</a></li>
+            <li><a href="#approval">审批管理</a></li>
+            <li><a href="#todo">待办事项</a></li>
+            <li><a href="#asset">固定资产管理</a></li>
+            <li><a href="#vehicle">车辆管理</a></li>
+            <li><a href="#meeting">会议室管理</a></li>
+            <li><a href="#seal">印章管理</a></li>
+            <li><a href="#document">公文管理</a></li>
+            <li><a href="#notice">公告管理</a></li>
+            <li><a href="#workflow">工作流管理</a></li>
+            <li><a href="#attendance">考勤管理</a></li>
+        </ul>
+
+        <h2 id="auth">认证管理</h2>
+        
+        <h3>用户登录</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/auth/login
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>username</td>
+                <td>string</td>
+                <td>是</td>
+                <td>用户名</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>string</td>
+                <td>是</td>
+                <td>密码</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "username": "admin",
+    "password": "123456"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDA4ODk3ODgsInVzZXJfaWQiOjF9.OrPbkLZqiwZlzGfYfJ2JXq1kbku3qod0h-JEW8kjQ48"
+        }</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"admin\",\"password\":\"123456\"}" http://localhost:8080/api/auth/login</code></pre>
+
+        <h3>获取用户信息</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/auth/user-info
+        </div>
+        <p>请求头:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>Bearer token</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+            "id": 1,
+            "username": "admin",
+            "real_name": "超级管理员",
+            "avatar": "",
+            "email": "",
+            "mobile": "",
+            "status": 1,
+            "last_login_at": "2025-03-01T12:29:48.684+08:00",
+            "last_login_ip": "127.0.0.1",
+            "created_by": 1,
+            "created_at": "2025-03-01T12:13:15.442+08:00",
+            "updated_at": "2025-03-01T12:29:48.708+08:00",
+            "deleted_at": null
+        }</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/auth/user-info</code></pre>
+
+        <h3>获取用户权限</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/auth/permissions
+        </div>
+        <p>请求头:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>Bearer token</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "menus": [
+            {
+                "id": 1,
+                "name": "系统管理",
+                "code": "system",
+                "type": 1,
+                "parent_id": null,
+                "path": "/system",
+                "component": "Layout",
+                "icon": "setting",
+                "sort": 1,
+                "status": 1,
+                "children": [
+                    {
+                        "id": 2,
+                        "name": "用户管理",
+                        "code": "system:user",
+                        "type": 1,
+                        "parent_id": 1,
+                        "path": "user",
+                        "component": "system/user/index",
+                        "icon": "user",
+                        "sort": 1,
+                        "status": 1
+                    }
+                ]
+            }
+        ],
+        "permissions": [
+            "system:user:list",
+            "system:user:create",
+            "system:user:update",
+            "system:user:delete"
+        ]
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/auth/permissions</code></pre>
+
+        <h3>修改密码</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/auth/change-password
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>old_password</td>
+                <td>string</td>
+                <td>是</td>
+                <td>原密码</td>
+            </tr>
+            <tr>
+                <td>new_password</td>
+                <td>string</td>
+                <td>是</td>
+                <td>新密码</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "old_password": "123456",
+    "new_password": "654321"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "密码修改成功"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"old_password\":\"123456\",\"new_password\":\"654321\"}" http://localhost:8080/api/auth/change-password</code></pre>
+
+        <h2 id="address-book">通讯录管理</h2>
+        
+        <h3>获取员工列表</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/address-book/employees
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>department_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>部门ID</td>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>页码,默认1</td>
+            </tr>
+            <tr>
+                <td>page_size</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>每页数量,默认10</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "total": 100,
+        "list": [
+            {
+                "id": 1,
+                "name": "张三",
+                "email": "zhangsan@example.com",
+                "phone": "13800138001",
+                "avatar": "http://example.com/avatar/1.jpg",
+                "department_id": 1,
+                "position": "开发工程师",
+                "status": 1,
+                "created_at": "2024-01-01T00:00:00+08:00",
+                "updated_at": "2024-01-15T10:30:00+08:00"
+            }
+        ]
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/address-book/employees?department_id=1&page=1&page_size=10"</code></pre>
+
+        <h3>创建员工</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/address-book/employees
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>姓名</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>string</td>
+                <td>是</td>
+                <td>邮箱</td>
+            </tr>
+            <tr>
+                <td>phone</td>
+                <td>string</td>
+                <td>否</td>
+                <td>手机号</td>
+            </tr>
+            <tr>
+                <td>avatar</td>
+                <td>string</td>
+                <td>否</td>
+                <td>头像URL</td>
+            </tr>
+            <tr>
+                <td>department_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>部门ID</td>
+            </tr>
+            <tr>
+                <td>position</td>
+                <td>string</td>
+                <td>否</td>
+                <td>职位</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "name": "张三",
+    "email": "zhangsan@example.com",
+    "phone": "13800138001",
+    "avatar": "http://example.com/avatar/1.jpg",
+    "department_id": 1,
+    "position": "开发工程师"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "name": "张三",
+        "email": "zhangsan@example.com",
+        "phone": "13800138001",
+        "avatar": "http://example.com/avatar/1.jpg",
+        "department_id": 1,
+        "position": "开发工程师",
+        "status": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"张三\",\"email\":\"zhangsan@example.com\",\"phone\":\"13800138001\",\"avatar\":\"http://example.com/avatar/1.jpg\",\"department_id\":1,\"position\":\"开发工程师\"}" http://localhost:8080/api/address-book/employees</code></pre>
+
+        <h3>获取部门列表</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/address-book/departments
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "name": "技术部",
+            "parent_id": null,
+            "level": 1,
+            "sort": 1,
+            "created_at": "2024-01-01T00:00:00+08:00",
+            "updated_at": "2024-01-01T00:00:00+08:00",
+            "children": [
+                {
+                    "id": 2,
+                    "name": "开发组",
+                    "parent_id": 1,
+                    "level": 2,
+                    "sort": 1,
+                    "created_at": "2024-01-01T00:00:00+08:00",
+                    "updated_at": "2024-01-01T00:00:00+08:00"
+                }
+            ]
+        }
+    ]
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/address-book/departments</code></pre>
+
+        <h3>创建部门</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/address-book/departments
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>部门名称</td>
+            </tr>
+            <tr>
+                <td>parent_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>父级部门ID</td>
+            </tr>
+            <tr>
+                <td>sort</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>排序</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "name": "开发组",
+    "parent_id": 1,
+    "sort": 1
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 2,
+        "name": "开发组",
+        "parent_id": 1,
+        "level": 2,
+        "sort": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"开发组\",\"parent_id\":1,\"sort\":1}" http://localhost:8080/api/address-book/departments</code></pre>
+
+        <h2 id="notification">消息通知</h2>
+        
+        <h3>获取消息列表</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/notifications
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>页码,默认1</td>
+            </tr>
+            <tr>
+                <td>page_size</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>每页数量,默认10</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "total": 100,
+        "list": [
+            {
+                "id": 1,
+                "title": "系统通知",
+                "content": "您有一个新的审批任务需要处理",
+                "type": 2,
+                "status": 1,
+                "user_id": 1,
+                "created_at": "2024-01-15T10:30:00+08:00",
+                "updated_at": "2024-01-15T10:30:00+08:00"
+            }
+        ]
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/notifications?page=1&page_size=10"</code></pre>
+
+        <h3>获取未读消息数量</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/notifications/unread-count
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "count": 10
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/notifications/unread-count</code></pre>
+
+        <h3>创建消息</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/notifications
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>title</td>
+                <td>string</td>
+                <td>是</td>
+                <td>消息标题</td>
+            </tr>
+            <tr>
+                <td>content</td>
+                <td>string</td>
+                <td>是</td>
+                <td>消息内容</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>消息类型:1系统消息,2审批通知</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>接收用户ID</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "title": "系统通知",
+    "content": "您有一个新的审批任务需要处理",
+    "type": 2,
+    "user_id": 1
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "title": "系统通知",
+        "content": "您有一个新的审批任务需要处理",
+        "type": 2,
+        "status": 1,
+        "user_id": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"title\":\"系统通知\",\"content\":\"您有一个新的审批任务需要处理\",\"type\":2,\"user_id\":1}" http://localhost:8080/api/notifications</code></pre>
+
+        <h3>标记消息已读</h3>
+        <div class="endpoint">
+            <span class="method put">PUT</span> /api/notifications/:id/read
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X PUT -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/notifications/1/read</code></pre>
+
+        <h3>标记所有消息已读</h3>
+        <div class="endpoint">
+            <span class="method put">PUT</span> /api/notifications/read-all
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X PUT -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/notifications/read-all</code></pre>
+
+        <h3>删除消息</h3>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> /api/notifications/:id
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X DELETE -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/notifications/1</code></pre>
+
+        <h2 id="approval">审批管理</h2>
+        
+        <h3>审批类型管理</h3>
+        
+        <h4>获取审批类型列表</h4>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/approval/types
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "name": "请假审批",
+            "code": "leave",
+            "sort": 1,
+            "status": 1,
+            "created_at": "2024-01-01T00:00:00+08:00",
+            "updated_at": "2024-01-01T00:00:00+08:00"
+        }
+    ]
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/approval/types</code></pre>
+
+        <h4>创建审批类型</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/types
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>类型名称</td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>string</td>
+                <td>是</td>
+                <td>类型编码</td>
+            </tr>
+            <tr>
+                <td>sort</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>排序</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "name": "请假审批",
+    "code": "leave",
+    "sort": 1
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "name": "请假审批",
+        "code": "leave",
+        "sort": 1,
+        "status": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"请假审批\",\"code\":\"leave\",\"sort\":1}" http://localhost:8080/api/approval/types</code></pre>
+
+        <h3>审批流程管理</h3>
+        
+        <h4>获取审批流程列表</h4>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/approval/flows
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>type_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>审批类型ID</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "approval_type_id": 1,
+            "name": "普通员工请假流程",
+            "description": "普通员工请假审批流程",
+            "status": 1,
+            "created_at": "2024-01-01T00:00:00+08:00",
+            "updated_at": "2024-01-01T00:00:00+08:00"
+        }
+    ]
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/approval/flows?type_id=1"</code></pre>
+
+        <h4>创建审批流程</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/flows
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>approval_type_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>审批类型ID</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>流程名称</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>string</td>
+                <td>否</td>
+                <td>流程说明</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "approval_type_id": 1,
+    "name": "普通员工请假流程",
+    "description": "普通员工请假审批流程"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "approval_type_id": 1,
+        "name": "普通员工请假流程",
+        "description": "普通员工请假审批流程",
+        "status": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"approval_type_id\":1,\"name\":\"普通员工请假流程\",\"description\":\"普通员工请假审批流程\"}" http://localhost:8080/api/approval/flows</code></pre>
+
+        <h3>审批节点管理</h3>
+        
+        <h4>获取审批节点列表</h4>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/approval/nodes
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>flow_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>审批流程ID</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "approval_flow_id": 1,
+            "name": "直接主管审批",
+            "type": 1,
+            "approver_id": 2,
+            "role_id": null,
+            "sort": 1,
+            "created_at": "2024-01-01T00:00:00+08:00",
+            "updated_at": "2024-01-01T00:00:00+08:00"
+        }
+    ]
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/approval/nodes?flow_id=1"</code></pre>
+
+        <h4>创建审批节点</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/nodes
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>approval_flow_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>审批流程ID</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>节点名称</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>节点类型:1指定人员,2指定角色,3指定部门负责人</td>
+            </tr>
+            <tr>
+                <td>approver_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>审批人ID</td>
+            </tr>
+            <tr>
+                <td>role_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>角色ID</td>
+            </tr>
+            <tr>
+                <td>sort</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>排序</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "approval_flow_id": 1,
+    "name": "直接主管审批",
+    "type": 1,
+    "approver_id": 2,
+    "sort": 1
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "approval_flow_id": 1,
+        "name": "直接主管审批",
+        "type": 1,
+        "approver_id": 2,
+        "role_id": null,
+        "sort": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"approval_flow_id\":1,\"name\":\"直接主管审批\",\"type\":1,\"approver_id\":2,\"sort\":1}" http://localhost:8080/api/approval/nodes</code></pre>
+
+        <h3>审批记录管理</h3>
+        
+        <h4>获取审批记录列表</h4>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/approval/records
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>用户ID</td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>状态:1待审批,2审批中,3已通过,4已驳回</td>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>页码,默认1</td>
+            </tr>
+            <tr>
+                <td>page_size</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>每页数量,默认10</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "total": 100,
+        "list": [
+            {
+                "id": 1,
+                "approval_flow_id": 1,
+                "title": "请假申请",
+                "content": "因个人事务请假一天",
+                "status": 1,
+                "applicant_id": 1,
+                "current_node_id": 1,
+                "created_at": "2024-01-15T10:00:00+08:00",
+                "updated_at": "2024-01-15T10:00:00+08:00"
+            }
+        ]
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/approval/records?user_id=1&status=1&page=1&page_size=10"</code></pre>
+
+        <h4>创建审批记录</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/records
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>approval_flow_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>审批流程ID</td>
+            </tr>
+            <tr>
+                <td>title</td>
+                <td>string</td>
+                <td>是</td>
+                <td>审批标题</td>
+            </tr>
+            <tr>
+                <td>content</td>
+                <td>string</td>
+                <td>是</td>
+                <td>审批内容</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "approval_flow_id": 1,
+    "title": "请假申请",
+    "content": "因个人事务请假一天"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "approval_flow_id": 1,
+        "title": "请假申请",
+        "content": "因个人事务请假一天",
+        "status": 1,
+        "applicant_id": 1,
+        "current_node_id": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"approval_flow_id\":1,\"title\":\"请假申请\",\"content\":\"因个人事务请假一天\"}" http://localhost:8080/api/approval/records</code></pre>
+
+        <h4>审批通过</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/records/:id/approve
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>comment</td>
+                <td>string</td>
+                <td>否</td>
+                <td>审批意见</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "comment": "同意"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"comment\":\"同意\"}" http://localhost:8080/api/approval/records/1/approve</code></pre>
+
+        <h4>审批驳回</h4>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/approval/records/:id/reject
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>comment</td>
+                <td>string</td>
+                <td>是</td>
+                <td>驳回原因</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "comment": "请假时间过长，请调整"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"comment\":\"请假时间过长，请调整\"}" http://localhost:8080/api/approval/records/1/reject</code></pre>
+
+        <h2 id="todo">待办事项</h2>
+        
+        <h3>获取待办事项列表</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/todo/tasks
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>页码,默认1</td>
+            </tr>
+            <tr>
+                <td>page_size</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>每页数量,默认10</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "total": 100,
+        "list": [
+            {
+                "id": 1,
+                "title": "系统通知",
+                "content": "您有一个新的审批任务需要处理",
+                "type": 2,
+                "status": 1,
+                "user_id": 1,
+                "created_at": "2024-01-15T10:30:00+08:00",
+                "updated_at": "2024-01-15T10:30:00+08:00"
+            }
+        ]
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" "http://localhost:8080/api/todo/tasks?page=1&page_size=10"</code></pre>
+
+        <h3>创建待办事项</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/todo/tasks
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>title</td>
+                <td>string</td>
+                <td>是</td>
+                <td>事项标题</td>
+            </tr>
+            <tr>
+                <td>content</td>
+                <td>string</td>
+                <td>是</td>
+                <td>事项内容</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>事项类型:1系统通知,2审批任务</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>接收用户ID</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "title": "系统通知",
+    "content": "您有一个新的审批任务需要处理",
+    "type": 2,
+    "user_id": 1
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 1,
+        "title": "系统通知",
+        "content": "您有一个新的审批任务需要处理",
+        "type": 2,
+        "status": 1,
+        "user_id": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"title\":\"系统通知\",\"content\":\"您有一个新的审批任务需要处理\",\"type\":2,\"user_id\":1}" http://localhost:8080/api/todo/tasks</code></pre>
+
+        <h3>标记事项已完成</h3>
+        <div class="endpoint">
+            <span class="method put">PUT</span> /api/todo/tasks/:id/complete
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X PUT -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/todo/tasks/1/complete</code></pre>
+
+        <h3>删除待办事项</h3>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> /api/todo/tasks/:id
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X DELETE -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/todo/tasks/1</code></pre>
+
+        <h2 id="permission">权限管理</h2>
+        
+        <h3>获取权限列表</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/permissions
+        </div>
+        <p>请求头:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>Authorization</td>
+                <td>Bearer token</td>
+            </tr>
+        </table>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "name": "系统管理",
+            "code": "system",
+            "type": 1,
+            "parent_id": null,
+            "path": "/system",
+            "component": "Layout",
+            "icon": "setting",
+            "sort": 1,
+            "status": 1,
+            "description": "系统管理模块",
+            "created_by": 1,
+            "created_at": "2024-01-01T00:00:00+08:00",
+            "updated_at": "2024-01-01T00:00:00+08:00",
+            "children": [
+                {
+                    "id": 2,
+                    "name": "用户管理",
+                    "code": "system:user",
+                    "type": 1,
+                    "parent_id": 1,
+                    "path": "user",
+                    "component": "system/user/index",
+                    "icon": "user",
+                    "sort": 1,
+                    "status": 1,
+                    "description": "用户管理功能",
+                    "created_by": 1,
+                    "created_at": "2024-01-01T00:00:00+08:00",
+                    "updated_at": "2024-01-01T00:00:00+08:00"
+                }
+            ]
+        }
+    ]
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/permissions</code></pre>
+
+        <h3>创建权限</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/permissions
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>是</td>
+                <td>权限名称</td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>string</td>
+                <td>是</td>
+                <td>权限编码</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>integer</td>
+                <td>是</td>
+                <td>类型:1菜单 2按钮 3接口</td>
+            </tr>
+            <tr>
+                <td>parent_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>父级ID</td>
+            </tr>
+            <tr>
+                <td>path</td>
+                <td>string</td>
+                <td>否</td>
+                <td>路由路径</td>
+            </tr>
+            <tr>
+                <td>component</td>
+                <td>string</td>
+                <td>否</td>
+                <td>前端组件</td>
+            </tr>
+            <tr>
+                <td>icon</td>
+                <td>string</td>
+                <td>否</td>
+                <td>图标</td>
+            </tr>
+            <tr>
+                <td>sort</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>排序</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>string</td>
+                <td>否</td>
+                <td>描述</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "name": "用户管理",
+    "code": "system:user",
+    "type": 1,
+    "parent_id": 1,
+    "path": "user",
+    "component": "system/user/index",
+    "icon": "user",
+    "sort": 1,
+    "description": "用户管理功能"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 2,
+        "name": "用户管理",
+        "code": "system:user",
+        "type": 1,
+        "parent_id": 1,
+        "path": "user",
+        "component": "system/user/index",
+        "icon": "user",
+        "sort": 1,
+        "status": 1,
+        "description": "用户管理功能",
+        "created_by": 1,
+        "created_at": "2024-01-15T11:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X POST -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"用户管理\",\"code\":\"system:user\",\"type\":1,\"parent_id\":1,\"path\":\"user\",\"component\":\"system/user/index\",\"icon\":\"user\",\"sort\":1,\"description\":\"用户管理功能\"}" http://localhost:8080/api/permissions</code></pre>
+
+        <h3>更新权限</h3>
+        <div class="endpoint">
+            <span class="method put">PUT</span> /api/permissions/:id
+        </div>
+        <p>请求参数:</p>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>string</td>
+                <td>否</td>
+                <td>权限名称</td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>string</td>
+                <td>否</td>
+                <td>权限编码</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>类型:1菜单 2按钮 3接口</td>
+            </tr>
+            <tr>
+                <td>parent_id</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>父级ID</td>
+            </tr>
+            <tr>
+                <td>path</td>
+                <td>string</td>
+                <td>否</td>
+                <td>路由路径</td>
+            </tr>
+            <tr>
+                <td>component</td>
+                <td>string</td>
+                <td>否</td>
+                <td>前端组件</td>
+            </tr>
+            <tr>
+                <td>icon</td>
+                <td>string</td>
+                <td>否</td>
+                <td>图标</td>
+            </tr>
+            <tr>
+                <td>sort</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>排序</td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>integer</td>
+                <td>否</td>
+                <td>状态:1启用 2禁用</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>string</td>
+                <td>否</td>
+                <td>描述</td>
+            </tr>
+        </table>
+        <p>请求示例:</p>
+        <pre><code>{
+    "name": "用户管理",
+    "icon": "user-filled",
+    "sort": 2,
+    "description": "用户管理功能模块"
+}</code></pre>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": 2,
+        "name": "用户管理",
+        "code": "system:user",
+        "type": 1,
+        "parent_id": 1,
+        "path": "user",
+        "component": "system/user/index",
+        "icon": "user-filled",
+        "sort": 2,
+        "status": 1,
+        "description": "用户管理功能模块",
+        "created_by": 1,
+        "created_at": "2024-01-01T00:00:00+08:00",
+        "updated_at": "2024-01-15T11:00:00+08:00"
+    }
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X PUT -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"用户管理\",\"icon\":\"user-filled\",\"sort\":2,\"description\":\"用户管理功能模块\"}" http://localhost:8080/api/permissions/2</code></pre>
+
+        <h3>删除权限</h3>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> /api/permissions/:id
+        </div>
+        <p>返回示例:</p>
+        <pre><code>{
+    "code": 200,
+    "message": "success"
+}</code></pre>
+        <p>Windows下测试命令:</p>
+        <pre><code>curl -X DELETE -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/permissions/2</code></pre>
+
+    </div>
+</body>
+</html> 
